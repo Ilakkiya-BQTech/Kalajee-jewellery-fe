@@ -95,6 +95,8 @@ export default function Layout() {
             <div className='line-separate'></div>
             <NavLink to="/currentstock" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Current Stock</li></NavLink>
             <div className='line-separate'></div>
+            <NavLink to="/notification" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Notifications</li></NavLink>
+            <div className='line-separate'></div>
             <div onClick={handleSignOut}><li onClick={closeSidebar}>Sign out</li></div>
           </ul>
         </div>

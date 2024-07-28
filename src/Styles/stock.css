@@ -92,11 +92,11 @@
     margin-left: 10px;
   }
   
-  /* @media (max-width: 900px) {
+  @media (max-width: 900px) {
     .stock{
         display: flex;
         flex-direction: column;
         gap: 40px;
         margin: 5px;
     }
-  } */
+  }

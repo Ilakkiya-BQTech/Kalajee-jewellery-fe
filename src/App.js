@@ -4,23 +4,23 @@ import Layout from './Components/Sidebar/Sidebar';
 import Dashboard from './Components/Boxes/Boxes';
 import PrivateRoute from './PrivateRoute';
 import Boxes from './Components/Boxes/Boxes';
-import Stock from './Components/CurrentStock/Stock';
+import Stock from './Components/BoxStock/Stock';
+import CurrentStock from './Components/CurrentStock/currentstock';
 function App() {
   return (
     <div className="App">
       
       <Routes>
-        {/* <Route path='/login' element={<Login />} /> */}
-        <Route path="/" element={<PrivateRoute />}>
+        {/* <Route path="/" element={<PrivateRoute />}> */}
           <Route element={<Layout/>}>
-            <Route path='/' element={<Dashboard/>} />
+
             <Route path='/boxes' element={<Boxes/>} />
-            <Route path='/currentstock' element={<Stock/>} />
-          
+            <Route path='/currentstock' element={<CurrentStock/>} />
+            <Route path="/stock/:boxId" element={<Stock />} />
            
           </Route>
-        </Route>
-        {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
+        {/* </Route> */}
+       
       </Routes>
      
    

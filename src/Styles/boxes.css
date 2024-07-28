@@ -4,11 +4,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  
   gap: 40px;
   padding: 20px;
   /* background-color: #f9f9f9; */
-  
 }
 
 .box {
@@ -16,11 +14,12 @@
   border-radius: 8px;
   padding: 40px;
   width: 300px;
- cursor: pointer;
+  cursor: pointer;
   text-align: center;
   background: #f2f2f2;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px #0000001a;
+  box-shadow: 0 4px 8px #0000001a;
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Ensure link text uses the default text color */
 }
 
 .box-title {
@@ -33,15 +32,15 @@
   font-size: 1rem;
   color: #666;
 }
+
 @media (max-width: 900px) {
-  .boxes-container{
+  .boxes-container {
     margin: 10px;
     gap: 30px;
     padding: 10px;
     flex-direction: column;
-  
   }
-  .box{
+  .box {
     width: 90%;
   }
 }
