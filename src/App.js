@@ -12,7 +12,7 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<PrivateRoute />}>
+        
           <Route element={<Layout/>}>
 
             <Route path='/' element={<Boxes/>} />
@@ -21,7 +21,7 @@ function App() {
             <Route path='/notification' element={<Notifications/>} />
            
           </Route>
-        </Route>
+     
        
       </Routes>
      
