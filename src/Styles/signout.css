@@ -1,41 +1,41 @@
 .confirmation-popup {
-    position: fixed;
-    top: 18%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 40px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    z-index: 9999;
-  }
-  
-  .confirmation-popup p {
-    margin-bottom: 10px;
-  }
-  
-  .confirmation-popup .buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .confirmation-popup button {
-    padding: 8px 20px;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
+  position: fixed;
+  top: 18%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+}
 
-  @media (max-width: 500px){
-    .confirmation-popup p{
-        margin: 10px;
-        text-align: center;
-    }
-    .confirmation-popup{
-        width: 70%;
-        padding: 20px;
-    }
+.confirmation-popup p {
+  margin-bottom: 10px;
+}
+
+.confirmation-popup .buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.confirmation-popup button {
+  padding: 8px 20px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+@media (max-width: 500px){
+  .confirmation-popup p{
+      margin: 10px;
+      text-align: center;
   }
+  .confirmation-popup{
+      width: 70%;
+      padding: 20px;
+  }
+}

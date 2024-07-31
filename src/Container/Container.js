@@ -6,6 +6,11 @@ const Title = ({ text }) => {
   return <h1 className="title">{text}</h1>;
 };
 
+//subtitle component
+const Subtitle = ({ text }) => {
+  return <h2 className="subtitle">{text}</h2>;
+};
+
 // Button Component
 const Button = ({ label, onClick }) => {
   return (
@@ -32,6 +37,6 @@ const Para = ({ text }) => {
     return <p className="para">{text}</p>;
   };
 
-export { Title, Button, Card, Para  };
+export { Title, Button, Card, Para,Subtitle };
 
 

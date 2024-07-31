@@ -1,87 +1,225 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../Styles/stock.css';
-import { Para, Title } from '../../Container/Container';
-
-const dummyData = [
-  { name: 'Earring 1', price: 10000, details: 'Details of Item 1', status: 'Available', image: 'https://www.kushals.com/cdn/shop/files/antique-earring-ruby-gold-antique-earring-153356-37651540344988.jpg?v=1710236795' },
-  { name: 'Earring 2', price: 20000, details: 'Details of Item 2', status: 'Sold', image: 'https://rimli.in/cdn/shop/files/tarikaearrringsantiquenonsilverrimli01.webp?v=1703324501' },
-  { name: 'Earring 3', price: 30000, details: 'Details of Item 3', status: 'Available', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtN-TTSfKAOWO2xnhv5L-4tImm1C10e_0tPg&s' },
-  { name: 'Earring 4', price: 100000, details: 'Details of Item 4', status: 'Available', image: 'https://5.imimg.com/data5/ANDROID/Default/2023/3/292648741/NP/AN/AQ/3210993/product-jpeg-250x250.jpg' },
-  { name: 'Earring 5', price: 20000, details: 'Details of Item 5', status: 'Sold', image: 'https://gehnashop.com/cdn/shop/files/exclusive-antique-gold-plated-golden-chandbali-earrings-for-women-by-gehna-shop-gehna-shop-chandbali-earrings-for-ladies-and-girls-buy-online-41753248694587.jpg?v=1688017328' },
-  { name: 'Earring 6', price: 30000, details: 'Details of Item 6', status: 'Available', image: 'https://attrangi.in/cdn/shop/files/vintage-hola-antique-earrings-attrangi-1.jpg?v=1705734005' },
-  { name: 'Earring 7', price: 10000, details: 'Details of Item 7', status: 'Available', image: 'https://images-static.nykaa.com/media/catalog/product/f/1/f112fc7jwj446.jpg' },
-  { name: 'Earring 8', price: 20000, details: 'Details of Item 8', status: 'Sold', image: 'https://images.cltstatic.com/media/product/350/AE00353-SS0000-antique-nanammas-temple-visit-earrings-in--silver-prd-1-model.jpg' },
-  { name: 'Earring 9', price: 30000, details: 'Details of Item 9', status: 'Available', image: 'https://img.tatacliq.com/images/i11/437Wx649H/MP000000017654181_437Wx649H_202305240245571.jpeg' },
-];
+import { Para, Subtitle, Title } from '../../Container/Container';
+import { FetchItemsAPI } from '../../Services/APIManager';
 
 const CurrentStock = () => {
+  const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredItems = dummyData.filter(item => {
-    const lowerCaseSearchTerm = searchTerm.trim().toLowerCase();
-    const lowerCaseStatus = item.status.toLowerCase();
-    
-    if (lowerCaseSearchTerm === 'available' || lowerCaseSearchTerm === 'sold') {
-      return lowerCaseStatus.includes(lowerCaseSearchTerm);
-    }
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await FetchItemsAPI();
+      if (data && data.data) { 
+        setItems(data.data);
+      }
+    };
+    fetchData();
+  }, []);
 
+  const filteredItems = items.filter(item => {
+    const lowerCaseSearchTerm = searchTerm.trim().toLowerCase();
     return (
-      item.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-      item.price.toString().includes(lowerCaseSearchTerm) ||
-      lowerCaseStatus.includes(lowerCaseSearchTerm)
+      item.itemCode.toLowerCase().includes(lowerCaseSearchTerm) ||
+      item.goldValue.toLowerCase().includes(lowerCaseSearchTerm) ||
+      item.rCode.toLowerCase().includes(lowerCaseSearchTerm) ||
+      item.grossWtGrams.toLowerCase().includes(lowerCaseSearchTerm)
     );
   });
 
+  const getDisplayValue = (value) => value === null || value === undefined ? '-' : value;
+
   return (
-    <div className="stock">
-      <div className="item-container">
-        {selectedItem ? (
-          <>
-            <img src={selectedItem.image} alt={selectedItem.name} className="item-image" />
-            <Title text={selectedItem.name} />
-            <p><span>Price:</span> ${selectedItem.price}</p>
-            <Para text={selectedItem.details} />
-            <p><span>Status: </span>{selectedItem.status}</p>
-          </>
-        ) : (
-            <p className='choose'>Select an item from the table</p>
-        )}
-      </div>
+    <div className="stock"> 
       <div className="table-container">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          className="search-box"
-        />
-        <table className="item-table">
-          <thead>
-            <tr>
-              <th>Item Name</th>
-              <th>Price</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredItems.map((item, index) => (
-              <tr
-                key={index}
-                onClick={() => setSelectedItem(item)}
-                className={selectedItem && selectedItem.name === item.name ? 'highlighted-row' : ''}
-              >
-                <td>{item.name}</td>
-                <td>{item.price}</td>
-                <td>{item.status}</td>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="search-box"
+          />
+          <table className="item-tables">
+            <thead>
+              <tr>
+                <th>Item Code</th>
+                {/* <th>Gold Value</th> */}
+                <th>R-Code</th>
+                <th>Gross Weight</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {filteredItems.map((item, index) => (
+                <tr
+                  key={index}
+                  onClick={() => setSelectedItem(item)}
+                  className={selectedItem && selectedItem.itemId === item.itemId ? 'highlighted-row' : ''}
+                >
+                  <td>{getDisplayValue(item.itemCode)}</td>
+                  {/* <td>{getDisplayValue(item.goldValue)}</td> */}
+                  <td>{getDisplayValue(item.rCode)}</td>
+                  <td>{getDisplayValue(item.grossWtGrams)} grams</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      {/* <div className="container"> */}
+        <div className="item-container">
+          {selectedItem ? (
+            <div className='item-top'>
+              <div className="item-image-section">
+                {selectedItem?.itemImages.length > 0 && (
+                  <img
+                    src={selectedItem.itemImages[0]?.imageUrl}
+                    alt={selectedItem.itemName || 'Item Image'}
+                    className="item-image"
+                  />
+                )}
+              </div>
+              <div className="item-details-section">
+                <Title text={selectedItem?.itemName || "No Item Selected"} />
+                <p><span>Item Code:</span> {getDisplayValue(selectedItem?.itemCode)}</p>
+                <p><span>Department:</span> {getDisplayValue(selectedItem?.dept)}</p>
+                <p><span>Silver Weight:</span> {getDisplayValue(selectedItem?.slvrWt)} grams</p>
+                <p><span>Sarraf Other Weight:</span> {getDisplayValue(selectedItem?.sarrafOtherWt)}</p>
+              </div>
+            </div>
+          ) : (
+            <Para text="Select an item from the table to view details." />
+          )}
+
+          {/* Diamonds Table */}
+          {selectedItem?.diamonds.length > 0 && (
+            <div className="item-diamonds">
+               <Title text='Diamonds'/>
+              <table className="item-table">
+                <thead>
+                  <tr>
+                 
+                    <th>Weight (cts)</th>
+                    <th>Value</th>
+                    <th>Rate</th>
+                    <th>Details</th>
+                    <th>PCS</th>
+                    <th>Lot No</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedItem.diamonds.map(diamond => (
+                    <tr key={diamond.diamondId}>
+                     
+                      <td>{getDisplayValue(diamond.weightCts)}</td>
+                      <td>{getDisplayValue(diamond.value)}</td>
+                      <td>{getDisplayValue(diamond.rate)}</td>
+                      <td>{getDisplayValue(diamond.details)}</td>
+                      <td>{getDisplayValue(diamond.pcs)}</td>
+                      <td>{getDisplayValue(diamond.lotNo)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Rose Cuts Table */}
+          {selectedItem?.roseCuts.length > 0 && (
+            <div className="item-roseCuts">
+              <Title text='Rose Cuts'/>
+         
+              <table className="item-table">
+                <thead>
+                  <tr>
+                    
+                    <th>Weight (cts)</th>
+                    <th>Value</th>
+                    <th>Rate</th>
+                    <th>PCS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedItem.roseCuts.map((roseCut, index) => (
+                    <tr key={index}>
+                     
+                      <td>{getDisplayValue(roseCut.weightCts)}</td>
+                      <td>{getDisplayValue(roseCut.value)}</td>
+                      <td>{getDisplayValue(roseCut.rate)}</td>
+                      <td>{getDisplayValue(roseCut.pcs)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Polkis Table */}
+          {selectedItem?.polkis.length > 0 && (
+            <div className="item-polkis">
+               <Title text='Polkis'/>
+            
+              <table className="item-table">
+                <thead>
+                  <tr>
+                
+                    <th>Weight (cts)</th>
+                    <th>Value</th>
+                    <th>Rate</th>
+                    <th>Details</th>
+                   
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedItem.polkis.map(polki => (
+                    <tr key={polki.polkiId}>
+                    
+                      <td>{getDisplayValue(polki.weightCts)}</td>
+                      <td>{getDisplayValue(polki.value)}</td>
+                      <td>{getDisplayValue(polki.rate)}</td>
+                      <td>{getDisplayValue(polki.details)}</td>
+                     
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Colored Stones Table */}
+          {selectedItem?.coloredStones.length > 0 && (
+            <div className="item-coloredStones">
+               <Title text='Colored Stones'/>
+              
+              <table className="item-table">
+                <thead>
+                  <tr>
+                    
+                    <th>Weight (cts)</th>
+                    <th>Value</th>
+                    <th>Rate</th>
+                    <th>PCS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedItem.coloredStones.map((stone, index) => (
+                    <tr key={index}>
+                      
+                      <td>{getDisplayValue(stone.weightCts)}</td>
+                      <td>{getDisplayValue(stone.value)}</td>
+                      <td>{getDisplayValue(stone.rate)}</td>
+                      <td>{getDisplayValue(stone.pcs)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        
+      {/* </div> */}
     </div>
   );
 };
 
 export default CurrentStock;
-

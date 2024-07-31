@@ -1,8 +1,13 @@
 .title {
     color:#1e4a88 ;
-   
+
     font-size: 22px;
-    margin: 5px;
+    margin: 10px ;
+}
+.subtitle{
+    font-size: 18px;
+    padding: 7px 0;    
+    color: #d4af37;
 }
 
 .button {
