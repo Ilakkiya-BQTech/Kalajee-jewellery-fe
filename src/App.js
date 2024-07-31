@@ -11,12 +11,11 @@ import BoxStock from './Components/BoxStock/Stock';
 function App() {
   return (
     <div className="App">
-      {/* <Login/> */}
       <Routes>
         <Route path="/" element={<PrivateRoute />}>
           <Route element={<Layout/>}>
 
-            <Route path='/boxes' element={<Boxes/>} />
+            <Route path='/' element={<Boxes/>} />
             <Route path='/currentstock' element={<CurrentStock/>} />
             <Route path="/stock/:boxId" element={<BoxStock/>} />
             <Route path='/notification' element={<Notifications/>} />

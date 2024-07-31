@@ -91,7 +91,7 @@ export default function Layout() {
       <div className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className='menu'>
           <ul>
-            <NavLink to="/boxes" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Boxes</li></NavLink>
+            <NavLink to="/" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Boxes</li></NavLink>
             <div className='line-separate'></div>
             <NavLink to="/currentstock" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Current Stock</li></NavLink>
             <div className='line-separate'></div>
