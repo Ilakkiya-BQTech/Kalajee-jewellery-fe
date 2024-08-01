@@ -29,9 +29,7 @@ const Boxes = () => {
             <p><span>Description:</span> {box.boxDescription}</p>
             <p><span>Weight:</span> {box.boxWeight}</p>
             <p><span>Status:</span> {box.boxStatus}</p>
-            <p><span>Created At:</span> {new Date(box.createdAt).toLocaleString()}</p>
-            <p><span>Updated At:</span> {new Date(box.updatedAt).toLocaleString()}</p>
-            <p><span>Count:</span> {box.count}</p>
+            <p><span>Quantity:</span> {box.count}</p>
           </Link>
         ))
       ) : (

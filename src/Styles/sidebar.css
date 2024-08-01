@@ -102,12 +102,12 @@ body {
 }
 
 .sidebar li:hover {
-  color: #0c5b84;
+  color: #d4af37;
 }
 
 /* Active Link Styles */
 .active li {
-  color: #0c5b84;
+  color: #d4af37;
 }
 
 /* Toggle Button Styles */
@@ -190,7 +190,7 @@ body {
 
 @media (max-width: 900px) {
   .sidebar {
-    transform: translateX(-200%);
+    transform: translateX(-250%);
   }
 
   .sidebar.open {

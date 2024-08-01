@@ -32,7 +32,7 @@ const DownloadReport = ({ items, boxId }) => {
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Items Report');
 
-      // Define columns
+      
       worksheet.columns = [
         { header: 'Image', key: 'image', width: 50 },
         { header: 'Item Code', key: 'itemCode', width: 20 },
@@ -59,18 +59,18 @@ const DownloadReport = ({ items, boxId }) => {
         { header: 'Gross Weight (in gms)', key: 'grossWeight', width: 20 },
       ];
 
-      // Apply styles to header
+     
       worksheet.getRow(1).eachCell({ includeEmpty: true }, cell => {
         cell.font = { bold: true };
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: { argb: 'ff00ff' } // Violet color
+          fgColor: { argb: 'ff00ff' }
         };
         cell.alignment = { vertical: 'middle', horizontal: 'center' };
       });
 
-      // Add rows and images
+     
       for (const item of items) {
         const row = worksheet.addRow({
           itemCode: item.itemCode || '-',
@@ -103,8 +103,8 @@ const DownloadReport = ({ items, boxId }) => {
           const base64Image = await fetchImageAsBase64(item.itemImages[0].imageUrl);
           if (base64Image) {
             const imageId = workbook.addImage({
-              base64: base64Image.split(",")[1], // Splitting to get the Base64 string without the metadata prefix
-              extension: 'jpeg', // Change extension based on your image type
+              base64: base64Image.split(",")[1], 
+              extension: 'jpeg', 
             });
 
             worksheet.mergeCells(`A${row.number}:A${row.number}`);

@@ -49,6 +49,14 @@
   margin-bottom: 20px;
 }
 
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+}
+
 .item-table {
   width: 100%;
   border-collapse: collapse;
@@ -99,18 +107,12 @@
   margin-left: 10px;
 }
 
-/* .item-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-} */
-
 .item-image-section {
   flex: 1;
 }
-.item-details-section .subtitle{
+
+.item-details-section .subtitle {
   font-size: 22px;
-  /* text-align: right; */
 }
 
 .item-image {
@@ -132,12 +134,6 @@
   gap: 10px;
 }
 
-.item-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
- cursor: pointer;
-}
 .item-tables {
   width: 100%;
   border-collapse: collapse;
@@ -147,11 +143,12 @@
   cursor: pointer;
 }
 
-.item-tables th, .item-tables  td {
+.item-tables th, .item-tables td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
+
 .item-table th, .item-table td {
   border: none;
   border-bottom: 1px solid #ddd;
@@ -164,9 +161,11 @@
   font-weight: normal;
   color: #333;
 }
-.item-table td{
+
+.item-table td {
   font-size: 15px;
 }
+
 .item-diamonds, .item-roseCuts, .item-polkis, .item-coloredStones {
   margin-top: 20px;
   width: 100%;
@@ -183,12 +182,20 @@
     display: flex;
     flex-direction: column;
     gap: 40px;
-    margin: 5px;
+    margin: 15px 0;
   }
-  .item-top{
+  
+  .item-top {
     flex-direction: column;
     width: 100%;
     align-items: center;
-  
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+  .item-container{
+    margin: 0;
+    padding: 5px;
   }
 }

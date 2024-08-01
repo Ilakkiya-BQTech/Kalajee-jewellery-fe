@@ -420,7 +420,7 @@ const BoxStock = () => {
               <p><span>Item Code:</span> {getDisplayValue(selectedItem?.itemCode)}</p>
               <p><span>Department:</span> {getDisplayValue(selectedItem?.dept)}</p>
               <p><span>Silver Weight:</span> {getDisplayValue(selectedItem?.slvrWt)} grams</p>
-              <p><span>Sarraf Other Weight:</span> {getDisplayValue(selectedItem?.sarrafOtherWt)}</p>
+              <p><span>Other Weight:</span> {getDisplayValue(selectedItem?.sarrafOtherWt)}</p>
             </div>
           </div>
         ) : (
@@ -430,6 +430,7 @@ const BoxStock = () => {
         {selectedItem?.diamonds.length > 0 && (
           <div className="item-diamonds">
             <Title text='Diamonds' />
+            <div className="table-scroll">
             <table className="item-table">
               <thead>
                 <tr>
@@ -455,12 +456,14 @@ const BoxStock = () => {
               </tbody>
             </table>
           </div>
+          </div>
         )}
 
         {/* Rose Cuts Table */}
         {selectedItem?.roseCuts.length > 0 && (
           <div className="item-roseCuts">
             <Title text='Rose Cuts' />
+            <div className="table-scroll">
             <table className="item-table">
               <thead>
                 <tr>
@@ -483,12 +486,14 @@ const BoxStock = () => {
             </table>
 
           </div>
+          </div>
         )}
 
         {/* Polkis Table */}
         {selectedItem?.polkis.length > 0 && (
           <div className="item-polkis">
             <Title text='Polkis' />
+            <div className="table-scroll">
             <table className="item-table">
               <thead>
                 <tr>
@@ -510,12 +515,14 @@ const BoxStock = () => {
               </tbody>
             </table>
           </div>
+          </div>
         )}
 
         {/* Colored Stones Table */}
         {selectedItem?.coloredStones.length > 0 && (
           <div className="item-coloredStones">
             <Title text='Colored Stones' />
+            <div className="table-scroll">
             <table className="item-table">
               <thead>
                 <tr>
@@ -537,6 +544,7 @@ const BoxStock = () => {
               </tbody>
             </table>
 
+          </div>
           </div>
         )}
       </div>
