@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import Logo from '../../Assets/KALAJEE_LOGO-5_3e0d5ad5-5092-430a-8bce-e4060e272afa_115x.avif';
-import Profile from '../../Assets/profile.jpg';
 import '../../Styles/sidebar.css';
 import '../../Styles/signout.css';
 import ConfirmationPopup from '../SignOut/SignOut';
@@ -94,6 +93,10 @@ export default function Layout() {
             <NavLink to="/" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Boxes</li></NavLink>
             <div className='line-separate'></div>
             <NavLink to="/currentstock" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Current Stock</li></NavLink>
+            <div className='line-separate'></div>
+            <NavLink to="/outgoingstock" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Exit Records</li></NavLink>
+            <div className='line-separate'></div>
+            <NavLink to="/stockhistory" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Stock History</li></NavLink>
             <div className='line-separate'></div>
             <NavLink to="/notification" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Notifications</li></NavLink>
             <div className='line-separate'></div>

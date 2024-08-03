@@ -123,3 +123,29 @@ export const UpdateBoxAPI = async (id, itemIds) => {
     return { error: error.message };
   }
 };
+
+export const EnterBoxAPI = async (id, boxWeight, itemIds) => {
+  try {
+    const response = await fetch(`${DEFAULT_URL}boxes/enter/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ boxWeight, tids: itemIds }), // Ensure body matches API requirements
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('API Error:', errorData); // Log API error details
+      throw new Error(errorData.message || "Failed to enter the box");
+    }
+
+    const resultData = await response.json();
+    console.log("API Response:", resultData); // Log the full response
+    return resultData;
+  } catch (error) {
+    console.error('Error in EnterBoxAPI:', error);
+    return { error: error.message };
+  }
+};
+

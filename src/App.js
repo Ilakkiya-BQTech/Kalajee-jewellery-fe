@@ -8,6 +8,9 @@ import CurrentStock from './Components/CurrentStock/currentstock';
 import Login from './Components/LoginPage/login';
 import Notifications from './Components/Notification/Notification';
 import BoxStock from './Components/BoxStock/Stock';
+import StockManager from './Components/OutgoingStock/Outgoingstock';
+import TableComponent from './Components/StockHistory/History';
+import UnreadItemsPage from './Components/StockHistory/UnreadItem';
 function App() {
   return (
     <div className="App">
@@ -18,6 +21,9 @@ function App() {
             <Route path='/' element={<Boxes/>} />
             <Route path='/currentstock' element={<CurrentStock/>} />
             <Route path="/stock/:boxId" element={<BoxStock/>} />
+            <Route path='/outgoingstock' element={<StockManager/>} />
+            <Route path='/stockhistory' element={<TableComponent/>} />
+            <Route path='/unread' element={<UnreadItemsPage/>} />
             <Route path='/notification' element={<Notifications/>} />
            
           </Route>

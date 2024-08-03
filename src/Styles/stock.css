@@ -39,7 +39,7 @@
   object-fit: cover;
 }
 
-.table-container {
+.stock .table-container {
   flex: 1;
 }
 
