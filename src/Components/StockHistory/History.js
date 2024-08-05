@@ -215,6 +215,25 @@ const TableComponent = () => {
 
   const paginatedData = data.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
 
+  const getPageNumbers = () => {
+    const maxPagesToShow = 3;
+    const halfMaxPagesToShow = Math.floor(maxPagesToShow / 2);
+    let startPage = Math.max(1, currentPage - halfMaxPagesToShow);
+    let endPage = Math.min(totalPages, currentPage + halfMaxPagesToShow);
+
+    if (currentPage <= halfMaxPagesToShow) {
+      endPage = Math.min(totalPages, maxPagesToShow);
+    } else if (currentPage + halfMaxPagesToShow >= totalPages) {
+      startPage = Math.max(1, totalPages - maxPagesToShow + 1);
+    }
+
+    const pageNumbers = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers;
+  };
+
   return (
     <div className='table-component'>
       <table>
@@ -249,14 +268,13 @@ const TableComponent = () => {
         >
           &lt;
         </button>
-       
-        {Array.from({ length: totalPages }, (_, index) => (
+        {getPageNumbers().map((page) => (
           <button
-            key={index + 1}
-            className={currentPage === index + 1 ? "active" : ""}
-            onClick={() => handlePageChange(index + 1)}
+            key={page}
+            className={currentPage === page ? "active" : ""}
+            onClick={() => handlePageChange(page)}
           >
-            {index + 1}
+            {page}
           </button>
         ))}
         <button
