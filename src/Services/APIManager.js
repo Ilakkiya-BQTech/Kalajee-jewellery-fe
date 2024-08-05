@@ -34,7 +34,7 @@ export const LoginAPI = async (username, password) => {
 
 export const FetchItemsAPI = async () => {
   try {
-    const response = await fetch(DEFAULT_URL + 'items/search', {
+    const response = await fetch(`${DEFAULT_URL}items/search`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -124,28 +124,116 @@ export const UpdateBoxAPI = async (id, itemIds) => {
   }
 };
 
-export const EnterBoxAPI = async (id, boxWeight, itemIds) => {
+export const CreateBoxAPI = async (parentId, itemIds, boxDescription) => {
   try {
-    const response = await fetch(`${DEFAULT_URL}boxes/enter/${id}`, {
-      method: 'PATCH',
+    const response = await fetch(DEFAULT_URL + 'boxes/', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ boxWeight, tids: itemIds }), // Ensure body matches API requirements
+      body: JSON.stringify({
+        parentId: parentId,
+        itemIds: itemIds,
+        boxDescription: boxDescription
+      }),
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('API Error:', errorData); // Log API error details
-      throw new Error(errorData.message || "Failed to enter the box");
+      throw new Error("Failed to create box");
     }
 
     const resultData = await response.json();
-    console.log("API Response:", resultData); // Log the full response
+    console.log("Box created successfully:", resultData);
     return resultData;
   } catch (error) {
-    console.error('Error in EnterBoxAPI:', error);
+    console.error('Error in CreateBoxAPI:', error);
     return { error: error.message };
   }
 };
 
+// export const StockHistoryAPI = async () => {
+//   try {
+//     const response = await fetch(`${DEFAULT_URL}stock/search`, {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     });
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch all boxes stock history");
+//     }
+
+//     const resultData = await response.json();
+//     console.log("Get all stockhistory api", resultData);
+//     return resultData;
+//   } catch (error) {
+//     console.error('Error in StockHistoryAPI:', error);
+//     return { error: error.message };
+//   }
+// };
+
+export const StockHistoryAPI = async (page = 1, limit = 10) => {
+  try {
+    const response = await fetch(`${DEFAULT_URL}stock/search?p=${page}&l=${limit}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch all boxes stock history");
+    }
+
+    const resultData = await response.json();
+    console.log("Get all stock history API", resultData);
+    return resultData;
+  } catch (error) {
+    console.error('Error in StockHistoryAPI:', error);
+    return { error: error.message };
+  }
+};
+
+
+export const GetItemsByIDAPI = async (id) => {
+  try {
+    const response = await fetch(`${DEFAULT_URL}items/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch item details");
+    }
+
+    const resultData = await response.json();
+    console.log("Get all Item by ID API", resultData);
+    return resultData;
+  } catch (error) {
+    console.error('Error in GetItemsByIDAPI:', error);
+    return { error: error.message };
+  }
+};
+
+export const DownloadPrice = async (itemIds) => {
+  try {
+    const response = await fetch(`${DEFAULT_URL}prices/download?itemIds=${itemIds.join(',')}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status === 200) {
+      const resultData = await response.json();
+      console.log("Download Price", resultData);
+      return resultData;
+    } else {
+      throw new Error(`Failed to download price: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Error in Download price API:', error);
+    return { error: error.message };
+  }
+};

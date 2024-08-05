@@ -279,7 +279,7 @@ import { Para, Title } from '../../Container/Container';
 import { BoxByIDAPI,UpdateBoxAPI } from '../../Services/APIManager';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import DownloadReport from './DownloadReport';
+import { DownloadReport } from '../../Container/Container';
 
 const BoxStock = () => {
   const { boxId } = useParams();

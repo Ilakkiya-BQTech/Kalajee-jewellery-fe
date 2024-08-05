@@ -37,6 +37,16 @@ const Para = ({ text }) => {
     return <p className="para">{text}</p>;
   };
 
-export { Title, Button, Card, Para,Subtitle };
+//DownloadReport
+const DownloadReport = ({ items, boxName }) => {
+  
+  return (
+    <button className="download-button">
+      Download Report
+    </button>
+  );
+};
+
+export { Title, Button, Card, Para,Subtitle,DownloadReport};
 
 

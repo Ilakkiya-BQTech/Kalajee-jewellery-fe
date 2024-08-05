@@ -92,7 +92,9 @@
   cursor: pointer;
   border-radius: 5px;
 }
-
+.stock-manager .pagination{
+  margin-top: 0;
+}
 .remove-button {
   background-color: red;
 }
@@ -176,6 +178,17 @@
   padding-bottom: 10px;
   font-size: 1.2em;
 }
+/* Remove alternating row colors */
+.stock  .item-tables tbody tr:nth-child(even),
+.item-tables tbody tr:nth-child(odd) {
+  background-color: transparent; /* or the same background color */
+}
+
+/* Style for the active row */
+.stock .highlighted-row {
+  background-color: #cce5ff !important; /* Light blue color */
+}
+
 
 @media (max-width: 900px) {
   .stock {
@@ -197,5 +210,9 @@
   .item-container{
     margin: 0;
     padding: 5px;
+  }
+  .stock-manager .table-bottom{
+    margin: 10px;
+    flex-direction: column;
   }
 }

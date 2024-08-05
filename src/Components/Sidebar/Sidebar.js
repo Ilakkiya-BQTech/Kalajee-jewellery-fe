@@ -90,11 +90,11 @@ export default function Layout() {
       <div className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className='menu'>
           <ul>
-            <NavLink to="/" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Boxes</li></NavLink>
+            <NavLink to="/" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>View Boxes</li></NavLink>
             <div className='line-separate'></div>
             <NavLink to="/currentstock" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Current Stock</li></NavLink>
             <div className='line-separate'></div>
-            <NavLink to="/outgoingstock" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Exit Records</li></NavLink>
+            <NavLink to="/outgoingstock" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Create Box</li></NavLink>
             <div className='line-separate'></div>
             <NavLink to="/stockhistory" onClick={closeSidebar} className={({ isActive }) => isActive ? 'active' : ''}><li>Stock History</li></NavLink>
             <div className='line-separate'></div>

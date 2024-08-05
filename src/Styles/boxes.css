@@ -46,11 +46,11 @@
   color: #888;
 }
 
-p {
+.boxes-container  p {
   margin-bottom: 15px; 
 }
 
-p span {
+.boxes-container  p span {
   color: #a67193;
   font-weight: bold;
 }

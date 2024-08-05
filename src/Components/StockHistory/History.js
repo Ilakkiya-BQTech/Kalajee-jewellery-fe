@@ -1,96 +1,72 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import "../../Styles/history.css";
-
-const dummyData = Array.from({ length: 5 }, (_, index) => ({
-  id: index + 1,
-  box: `Box-${index + 1}`,
-  quantity: 50,
-  read: 45,
-  unread: 5,
-  unreadItems: Array.from({ length: 5 }, (_, i) => ({
-    id: i + 1,
-    code: `Code-${i + 1}`,
-    imageUrl: `https://via.placeholder.com/50?text=Img${i + 1}`, // Placeholder image URL
-  })),
-}));
-
-const TableComponent = () => {
-  const navigate = useNavigate();
-
-  const handleUnreadClick = (unreadItems) => {
-    navigate('/unread', { state: { unreadItems } });
-  };
-
-  return (
-    <div className='table-component'>
-      <table>
-        <thead>
-          <tr>
-            <th>Index</th>
-            <th>Box</th>
-            <th>Quantity</th>
-            <th>Read</th>
-            <th>Unread</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dummyData.map((item, index) => (
-            <tr key={item.id}>
-              <td>{index + 1}</td>
-              <td>{item.box}</td>
-              <td>{item.quantity}</td>
-              <td>{item.read}</td>
-              <td>
-             
-                <button className="unread-button" onClick={() => handleUnreadClick(item.unreadItems)}>
-                {item.unread}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-export default TableComponent;
-
-// import React from "react";
+// import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom';
 // import "../../Styles/history.css";
+// import { StockHistoryAPI } from '../../Services/APIManager';
 
 // const TableComponent = () => {
-//   const data = [
-//     { box: "Box 1", quantity: 50, read: 45, unread: 5 },
-//     { box: "Box 2", quantity: 60, read: 54, unread: 6 },
-//     { box: "Box 3", quantity: 70, read: 61, unread: 9 },
-//     { box: "Box 4", quantity: 60, read: 55, unread: 5 },
-//     { box: "Box 5", quantity: 70, read: 65, unread: 5 },
-//   ];
+//   const [data, setData] = useState([]);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const result = await StockHistoryAPI();
+        
+//         if (result && result.data) {
+//           // Check if result.data is an array
+//           if (Array.isArray(result.data)) {
+//             const formattedData = result.data.map(item => ({
+//               id: item.countId,
+//               boxId: item.boxId,
+//               totalItems: item.totalItems,
+//               totalRead: item.totalRead,
+//               totalUnread: item.totalUnread,
+//               unreadItems: item.unreadItemIds.map(id => ({
+//                 id,
+//                 code: `Code-${id}`,
+//                 imageUrl: `https://via.placeholder.com/50?text=Img${id}` // Placeholder image URL
+//               }))
+//             }));
+//             setData(formattedData);
+//           } else {
+//             console.error('API response is not an array:', result.data);
+//           }
+//         } else {
+//           console.error('API response is missing data:', result);
+//         }
+//       } catch (error) {
+//         console.error('Error fetching data:', error);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   const handleUnreadClick = (unreadItems) => {
+//     navigate('/unread', { state: { unreadItems } });
+//   };
 
 //   return (
-//     <div className="table-component">
+//     <div className='table-component'>
 //       <table>
 //         <thead>
 //           <tr>
-//             <th>Index</th>
-//             <th>Box</th>
-//             <th>Quantity</th>
-//             <th>Read</th>
-//             <th>Unread</th>
+//             <th>Box ID</th>
+//             <th>Total Items</th>
+//             <th>Total Read</th>
+//             <th>Total Unread</th>
 //           </tr>
 //         </thead>
 //         <tbody>
-//           {data.map((item, index) => (
-//             <tr key={index}>
-//               <td>{index + 1}</td>
-//               <td>{item.box}</td>
-//               <td>{item.quantity}</td>
-//               <td>{item.read}</td>
+//           {data.map((item) => (
+//             <tr key={item.id}>
+//               <td>{item.boxId}</td>
+//               <td>{item.totalItems}</td>
+//               <td>{item.totalRead}</td>
 //               <td>
-                
-//                 <button className="unread-button">{item.unread}</button>
+//                 <button className="unread-button" onClick={() => handleUnreadClick(item.unreadItems)}>
+//                   {item.totalUnread}
+//                 </button>
 //               </td>
 //             </tr>
 //           ))}
@@ -101,3 +77,198 @@ export default TableComponent;
 // };
 
 // export default TableComponent;
+
+
+// import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import "../../Styles/history.css";
+// import { StockHistoryAPI } from '../../Services/APIManager';
+
+// const TableComponent = () => {
+//   const [data, setData] = useState([]);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const result = await StockHistoryAPI();
+        
+//         if (result && result.data) {
+//           if (Array.isArray(result.data)) {
+//             const formattedData = result.data.map(item => ({
+//               id: item.countId,
+//               boxId: item.boxId,
+//               totalItems: item.totalItems,
+//               totalRead: item.totalRead,
+//               totalUnread: item.totalUnread,
+//               unreadItemIds: item.unreadItemIds.map(id => ({
+//                 id,
+//                 code: `Code-${id}`,
+//                 imageUrl: `https://via.placeholder.com/50?text=Img${id}` 
+//               }))
+//             }));
+//             setData(formattedData);
+//           } else {
+//             console.error('API response is not an array:', result.data);
+//           }
+//         } else {
+//           console.error('API response is missing data:', result);
+//         }
+//       } catch (error) {
+//         console.error('Error fetching data:', error);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   const handleUnreadClick = (unreadItemIds) => {
+//     navigate('/unread', { state: { unreadItemIds } });
+//   };
+
+//   return (
+//     <div className='table-component'>
+      
+//       <table>
+//         <thead>
+//           <tr>
+//             <th>Box ID</th>
+//             <th>Total Items</th>
+//             <th>Total Read</th>
+//             <th>Total Unread</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           {data.map((item) => (
+//             <tr key={item.id}>
+//               <td>{item.boxId}</td>
+//               <td>{item.totalItems}</td>
+//               <td>{item.totalRead}</td>
+//               <td>
+//                 <button className="unread-button" onClick={() => handleUnreadClick(item.unreadItemIds.map(i => i.id))}>
+//                   {item.totalUnread}
+//                 </button>
+//               </td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+//     </div>
+//   );
+// };
+
+// export default TableComponent;
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import "../../Styles/history.css";
+import { StockHistoryAPI } from '../../Services/APIManager';
+
+const TableComponent = () => {
+  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await StockHistoryAPI();
+        if (result && result.data) {
+          if (Array.isArray(result.data)) {
+            const formattedData = result.data.map(item => ({
+              id: item.countId,
+              boxId: item.boxId,
+              totalItems: item.totalItems,
+              totalRead: item.totalRead,
+              totalUnread: item.totalUnread,
+              unreadItemIds: item.unreadItemIds.map(id => ({
+                id,
+                code: `Code-${id}`,
+                imageUrl: `https://via.placeholder.com/50?text=Img${id}`
+              }))
+            }));
+            setData(formattedData);
+          } else {
+            console.error('API response is not an array:', result.data);
+          }
+        } else {
+          console.error('API response is missing data:', result);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleUnreadClick = (unreadItemIds) => {
+    navigate('/unread', { state: { unreadItemIds } });
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const totalPages = Math.ceil(data.length / rowsPerPage);
+
+  const paginatedData = data.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  return (
+    <div className='table-component'>
+      <table>
+        <thead>
+          <tr>
+            <th>Box ID</th>
+            <th>Total Items</th>
+            <th>Total Read</th>
+            <th>Total Unread</th>
+          </tr>
+        </thead>
+        <tbody>
+          {paginatedData.map((item) => (
+            <tr key={item.id}>
+              <td>{item.boxId}</td>
+              <td>{item.totalItems}</td>
+              <td>{item.totalRead}</td>
+              <td>
+                <button className="unread-button" onClick={() => handleUnreadClick(item.unreadItemIds.map(i => i.id))}>
+                  {item.totalUnread}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="pagination">
+        <button
+          className="arrows"
+          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+        >
+          &lt;
+        </button>
+       
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index + 1}
+            className={currentPage === index + 1 ? "active" : ""}
+            onClick={() => handlePageChange(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+        <button
+          className="arrows"
+          onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default TableComponent;

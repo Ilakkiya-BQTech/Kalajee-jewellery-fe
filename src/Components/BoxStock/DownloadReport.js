@@ -1,142 +1,134 @@
-import React from 'react';
-import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
-
-const fetchImageAsBase64 = async (url) => {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const blob = await response.blob();
-    const reader = new FileReader();
-    return new Promise((resolve, reject) => {
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  } catch (error) {
-    console.error('Error fetching image:', error, url);
-    return null;
-  }
-};
-
-const DownloadReport = ({ items, boxId }) => {
-  const handleDownload = async () => {
-    try {
-      if (!items || items.length === 0) {
-        console.error("No items available for the report");
-        return;
-      }
-
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('Items Report');
-
-      
-      worksheet.columns = [
-        { header: 'Image', key: 'image', width: 50 },
-        { header: 'Item Code', key: 'itemCode', width: 20 },
-        { header: 'WH Price', key: 'whPrice', width: 20 },
-        { header: '18k Gold (in gms)', key: 'goldWeight', width: 20 },
-        { header: 'Gold Value', key: 'goldValue', width: 20 },
-        { header: 'Labour', key: 'labour', width: 20 },
-        { header: 'Diamond Weight (in cts)', key: 'diamondWeight', width: 20 },
-        { header: 'Diamond Value', key: 'diamondValue', width: 20 },
-        { header: 'Polki Weight (in cts)', key: 'polkiWeight', width: 20 },
-        { header: 'Polki Value', key: 'polkiValue', width: 20 },
-        { header: 'Polki Details', key: 'polkiDetails', width: 20 },
-        { header: 'Polki Type', key: 'polkiType', width: 20 },
-        { header: 'CS Weight (in cts)', key: 'csWeight', width: 20 },
-        { header: 'Col St. PCS', key: 'colStPcs', width: 20 },
-        { header: 'Col St. Rate (per ct)', key: 'colStRatePerCt', width: 20 },
-        { header: 'Col St. Rate (per pc)', key: 'colStRatePerPc', width: 20 },
-        { header: 'Col St. Value', key: 'colStValue', width: 20 },
-        { header: 'C Stone Name', key: 'cStoneName', width: 20 },
-        { header: 'Item Name', key: 'itemName', width: 30 },
-        { header: 'Metal Colour', key: 'metalColour', width: 20 },
-        { header: 'Silver Weight', key: 'silverWeight', width: 20 },
-        { header: 'Sarraf/Other Weight', key: 'sarrafOtherWeight', width: 20 },
-        { header: 'Gross Weight (in gms)', key: 'grossWeight', width: 20 },
-      ];
-
-     
-      worksheet.getRow(1).eachCell({ includeEmpty: true }, cell => {
-        cell.font = { bold: true };
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: 'ff00ff' }
-        };
-        cell.alignment = { vertical: 'middle', horizontal: 'center' };
-      });
-
-     
-      for (const item of items) {
-        const row = worksheet.addRow({
-          itemCode: item.itemCode || '-',
-          whPrice: item.whPrice || '-',
-          goldWeight: item.gold18KGrams || '-',
-          goldValue: item.goldValue || '-',
-          labour: item.labour || '-',
-          diamondWeight: item.diamonds.map(d => d.weightCts).join('; ') || '-',
-          diamondValue: item.diamonds.map(d => d.value).join('; ') || '-',
-          polkiWeight: item.polkis.map(p => p.weightCts).join('; ') || '-',
-          polkiValue: item.polkis.map(p => p.value).join('; ') || '-',
-          polkiDetails: item.polkis.map(p => p.details).join('; ') || '-',
-          polkiType: item.polkis.map(p => p.type).join('; ') || '-',
-          csWeight: item.coloredStones.map(cs => cs.weightCts).join('; ') || '-',
-          colStPcs: item.coloredStones.map(cs => cs.pcs).join('; ') || '-',
-          colStRatePerCt: item.coloredStones.map(cs => cs.ratePerCt).join('; ') || '-',
-          colStRatePerPc: item.coloredStones.map(cs => cs.ratePerPc).join('; ') || '-',
-          colStValue: item.coloredStones.map(cs => cs.value).join('; ') || '-',
-          cStoneName: item.coloredStones.map(cs => cs.name).join('; ') || '-',
-          itemName: item.itemName || '-',
-          metalColour: item.metalColour || '-',
-          silverWeight: item.slvrWt || '-',
-          sarrafOtherWeight: item.sarrafOtherWt || '-',
-          grossWeight: item.grossWtGrams || '-',
-        });
-
-        row.height = 100; 
-
-        if (item.itemImages.length > 0) {
-          const base64Image = await fetchImageAsBase64(item.itemImages[0].imageUrl);
-          if (base64Image) {
-            const imageId = workbook.addImage({
-              base64: base64Image.split(",")[1], 
-              extension: 'jpeg', 
-            });
-
-            worksheet.mergeCells(`A${row.number}:A${row.number}`);
-
-            worksheet.addImage(imageId, {
-              tl: { col: 0, row: row.number - 1 },
-              ext: { width: 100, height: 100 },
-            });
-
-            console.log(`Image added for item: ${item.itemCode}`);
-          } else {
-            worksheet.getCell(`A${row.number}`).value = '-';
-            console.log(`Image not added for item: ${item.itemCode}`);
-          }
-        } else {
-          worksheet.getCell(`A${row.number}`).value = '-';
-          console.log(`No images available for item: ${item.itemCode}`);
-        }
-      }
-
-      const buffer = await workbook.xlsx.writeBuffer();
-      saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'BoxStock_Report.xlsx');
-    } catch (error) {
-      console.error('Error generating report:', error);
-    }
-  };
-
+const DownloadReport = ({ items, boxName }) => {
+  // Component logic here
   return (
-    <button className="download-button" onClick={handleDownload}>
+    <button className="download-button">
       Download Report
     </button>
   );
 };
 
-export default DownloadReport;
+// import React from 'react';
+// import { jsPDF } from 'jspdf';
+// import 'jspdf-autotable';
+// import logo from '../../Assets/KALAJEE_LOGO-5_3e0d5ad5-5092-430a-8bce-e4060e272afa_115x.avif'
+// const DownloadReport = ({ items, boxName, logoUrl }) => {
+//   const generateReport = () => {
+//     const doc = new jsPDF('landscape');
+    
+ 
+//     doc.text('Report for Boxes', 30, 20);
+
+//     // Add logo at top right
+//     if (logoUrl) {
+//       doc.addImage(logoUrl, 'JPEG', 250, 5, 30, 30); // Adjust the position and size as needed
+//     }
+
+//     const columns = [
+//       { header: "Image", dataKey: "image" },
+//       { header: "Item Code", dataKey: "itemCode" },
+//       // { header: "WH Price", dataKey: "whPrice" },
+//       // { header: "14k Gold", dataKey: "gold14k" },
+//       { header: "Gold Rate", dataKey: "goldRate" },
+//       { header: "Gold Value", dataKey: "goldValue" },
+//       { header: "Labour", dataKey: "labour" },
+//       { header: "Diamond Weight (Cts)", dataKey: "diamondWeight" },
+//       { header: "Diamond Rate", dataKey: "diamondRate" },
+//       { header: "Diamond Value", dataKey: "diamondValue" },
+//       { header: "Polki Weight (Cts)", dataKey: "polkiWeight" },
+//       { header: "Polki Rate", dataKey: "polkiRate" },
+//       { header: "Polki Value", dataKey: "polkiValue" },
+//       { header: "Polki Details", dataKey: "polkiDetails" },
+//       { header: "Polki Type", dataKey: "polkiType" },
+//       { header: "Colored Stone Weight (Cts)", dataKey: "csWeight" },
+//       { header: "Colored Stone Rate", dataKey: "csRate" },
+//       { header: "Colored Stone Name", dataKey: "csName" },
+//       { header: "Item Name", dataKey: "itemName" },
+//       { header: "Metal", dataKey: "metal" },
+//       { header: "Color", dataKey: "color" },
+//       { header: "Silver Weight (Grams)", dataKey: "silverWeight" },
+//       { header: "Sarrafas/Other Weight", dataKey: "otherWeight" },
+//       { header: "Gross Weight (Grams)", dataKey: "grossWeight" }
+//     ];
+
+//     const rows = items.map(item => ({
+//       image: item.itemImages?.[0]?.imageUrl || "N/A",
+//       itemCode: item.itemCode || "N/A",
+//       // whPrice: item.wholesalePrice || "N/A",
+//       // gold14k: item.gold14k || "N/A",
+//       goldRate: item.goldRate || "N/A",
+//       goldValue: item.goldValue || "N/A",
+//       labour: item.labour || "N/A",
+//       diamondWeight: item.diamonds.reduce((acc, diamond) => acc + (diamond.weightCts || 0), 0),
+//       diamondRate: item.diamonds.reduce((acc, diamond) => acc + (diamond.rate || 0), 0),
+//       diamondValue: item.diamonds.reduce((acc, diamond) => acc + (diamond.value || 0), 0),
+//       polkiWeight: item.polkis.reduce((acc, polki) => acc + (polki.weightCts || 0), 0),
+//       polkiRate: item.polkis.reduce((acc, polki) => acc + (polki.rate || 0), 0),
+//       polkiValue: item.polkis.reduce((acc, polki) => acc + (polki.value || 0), 0),
+//       polkiDetails: item.polkis.map(polki => polki.details || "N/A").join(', '),
+//       polkiType: item.polkis.map(polki => polki.type || "N/A").join(', '),
+//       csWeight: item.coloredStones.reduce((acc, stone) => acc + (stone.weightCts || 0), 0),
+//       csRate: item.coloredStones.reduce((acc, stone) => acc + (stone.rate || 0), 0),
+//       csName: item.coloredStones.map(stone => stone.name || "N/A").join(', '),
+//       itemName: item.itemName || "N/A",
+//       metal: item.metal || "N/A",
+//       color: item.color || "N/A",
+//       silverWeight: item.slvrWt || "N/A",
+//       otherWeight: item.sarrafOtherWt || "N/A",
+//       grossWeight: item.grossWtGrams || "N/A"
+//     }));
+
+//     // Add table
+//     doc.autoTable({
+//       columns: columns,
+//       body: rows,
+//       startY: 40, // Start below the logo
+//       theme: 'grid',
+//       didDrawCell: (data) => {
+//         // Check if the current cell is the image column
+//         if (data.column.dataKey === 'image' && data.cell.section === 'body') {
+//           const imgUrl = data.cell.raw;
+//           if (imgUrl !== 'N/A') {
+//             doc.addImage(imgUrl, 'JPEG', data.cell.x + 2, data.cell.y + 2, 20, 20);
+//           }
+//         }
+//       },
+//       columnStyles: {
+//         image: { cellWidth: 30 },
+//         itemCode: { cellWidth: 30 },
+//         whPrice: { cellWidth: 20 },
+//         gold14k: { cellWidth: 20 },
+//         goldRate: { cellWidth: 20 },
+//         goldValue: { cellWidth: 20 },
+//         labour: { cellWidth: 20 },
+//         diamondWeight: { cellWidth: 20 },
+//         diamondRate: { cellWidth: 20 },
+//         diamondValue: { cellWidth: 20 },
+//         polkiWeight: { cellWidth: 20 },
+//         polkiRate: { cellWidth: 20 },
+//         polkiValue: { cellWidth: 20 },
+//         polkiDetails: { cellWidth: 40 },
+//         polkiType: { cellWidth: 20 },
+//         csWeight: { cellWidth: 20 },
+//         csRate: { cellWidth: 20 },
+//         csName: { cellWidth: 30 },
+//         itemName: { cellWidth: 30 },
+//         metal: { cellWidth: 20 },
+//         color: { cellWidth: 20 },
+//         silverWeight: { cellWidth: 20 },
+//         otherWeight: { cellWidth: 20 },
+//         grossWeight: { cellWidth: 20 }
+//       }
+//     });
+
+//     doc.save('BoxesReport.pdf');
+//   };
+
+//   return (
+//     <button onClick={generateReport} className="download-button">
+//       Download Report
+//     </button>
+//   );
+// };
+
+// export default DownloadReport;
+
