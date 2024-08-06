@@ -43,8 +43,8 @@ const CurrentStock = () => {
   const getDisplayValue = (value) => (value === null || value === undefined ? '-' : value);
 
   const filteredItems = items.filter(item => 
-    item.itemCode.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    item.rCode.toLowerCase().includes(searchTerm.toLowerCase())
+    (item.itemCode && item.itemCode.toLowerCase().includes(searchTerm.toLowerCase())) || 
+    (item.rCode && item.rCode.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (

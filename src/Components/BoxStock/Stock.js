@@ -1,4 +1,6 @@
 
+
+
 // import React, { useState, useEffect } from 'react';
 // import { useParams } from 'react-router-dom';
 // import '../../Styles/stock.css';
@@ -6,6 +8,7 @@
 // import { BoxByIDAPI,UpdateBoxAPI } from '../../Services/APIManager';
 // import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
+// import { DownloadReport } from '../../Container/Container';
 
 // const BoxStock = () => {
 //   const { boxId } = useParams();
@@ -14,13 +17,14 @@
 //   const [searchTerm, setSearchTerm] = useState('');
 //   const [boxData, setBoxData] = useState(null);
 //   const [selectedItems, setSelectedItems] = useState(new Set());
-
+//   const [boxName, setBoxName] = useState('');
 //   useEffect(() => {
 //     const fetchBoxData = async () => {
 //       const data = await BoxByIDAPI(boxId);
 //       if (data?.data?.items) {
 //         setItems(data.data.items);
 //         setBoxData(data.data);
+//         setBoxName(data.boxId);
 //       }
 //     };
 //     fetchBoxData();
@@ -123,10 +127,10 @@
 //         <button className="remove-button" onClick={handleRemoveSelectedItems}  disabled={selectedItems.size === 0}>
 //           Remove Selected Items
 //         </button>
-
-//         <button className="download-button">
+//         <DownloadReport items={items} boxName={boxName} />
+//         {/* <button className="download-button" items={items}>
 //           Download Report
-//         </button>
+//         </button> */}
 //       </div>
 //       <div className="item-container">
 //         {selectedItem ? (
@@ -145,7 +149,7 @@
 //               <p><span>Item Code:</span> {getDisplayValue(selectedItem?.itemCode)}</p>
 //               <p><span>Department:</span> {getDisplayValue(selectedItem?.dept)}</p>
 //               <p><span>Silver Weight:</span> {getDisplayValue(selectedItem?.slvrWt)} grams</p>
-//               <p><span>Sarraf Other Weight:</span> {getDisplayValue(selectedItem?.sarrafOtherWt)}</p>
+//               <p><span>Other Weight:</span> {getDisplayValue(selectedItem?.sarrafOtherWt)}</p>
 //             </div>
 //           </div>
 //         ) : (
@@ -155,6 +159,7 @@
 //         {selectedItem?.diamonds.length > 0 && (
 //           <div className="item-diamonds">
 //             <Title text='Diamonds' />
+//             <div className="table-scroll">
 //             <table className="item-table">
 //               <thead>
 //                 <tr>
@@ -180,12 +185,14 @@
 //               </tbody>
 //             </table>
 //           </div>
+//           </div>
 //         )}
 
 //         {/* Rose Cuts Table */}
 //         {selectedItem?.roseCuts.length > 0 && (
 //           <div className="item-roseCuts">
 //             <Title text='Rose Cuts' />
+//             <div className="table-scroll">
 //             <table className="item-table">
 //               <thead>
 //                 <tr>
@@ -208,12 +215,14 @@
 //             </table>
 
 //           </div>
+//           </div>
 //         )}
 
 //         {/* Polkis Table */}
 //         {selectedItem?.polkis.length > 0 && (
 //           <div className="item-polkis">
 //             <Title text='Polkis' />
+//             <div className="table-scroll">
 //             <table className="item-table">
 //               <thead>
 //                 <tr>
@@ -235,12 +244,14 @@
 //               </tbody>
 //             </table>
 //           </div>
+//           </div>
 //         )}
 
 //         {/* Colored Stones Table */}
 //         {selectedItem?.coloredStones.length > 0 && (
 //           <div className="item-coloredStones">
 //             <Title text='Colored Stones' />
+//             <div className="table-scroll">
 //             <table className="item-table">
 //               <thead>
 //                 <tr>
@@ -263,6 +274,7 @@
 //             </table>
 
 //           </div>
+//           </div>
 //         )}
 //       </div>
 //     </div>
@@ -270,13 +282,11 @@
 // };
 
 // export default BoxStock;
-
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import '../../Styles/stock.css';
 import { Para, Title } from '../../Container/Container';
-import { BoxByIDAPI,UpdateBoxAPI } from '../../Services/APIManager';
+import { BoxByIDAPI, UpdateBoxAPI } from '../../Services/APIManager';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DownloadReport } from '../../Container/Container';
@@ -289,6 +299,9 @@ const BoxStock = () => {
   const [boxData, setBoxData] = useState(null);
   const [selectedItems, setSelectedItems] = useState(new Set());
   const [boxName, setBoxName] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   useEffect(() => {
     const fetchBoxData = async () => {
       const data = await BoxByIDAPI(boxId);
@@ -329,6 +342,7 @@ const BoxStock = () => {
   });
 
   const getDisplayValue = (value) => value === null || value === undefined ? '-' : value;
+
   const handleRemoveSelectedItems = async () => {
     if (selectedItems.size === 0) {
       alert("No items selected");
@@ -353,6 +367,13 @@ const BoxStock = () => {
     }
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const paginatedItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
     <div className="stock">
       <div className="table-container">
@@ -367,7 +388,11 @@ const BoxStock = () => {
           <thead>
             <tr>
               <th>
-
+                <input
+                  type="checkbox"
+                  checked={selectedItems.size === items.length}
+                  onChange={handleSelectAllChange}
+                />
               </th>
               <th>Item Code</th>
               <th>R-Code</th>
@@ -375,7 +400,7 @@ const BoxStock = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredItems.map((item, index) => (
+            {paginatedItems.map((item, index) => (
               <tr
                 key={index}
                 onClick={() => setSelectedItem(item)}
@@ -395,13 +420,22 @@ const BoxStock = () => {
             ))}
           </tbody>
         </table>
-        <button className="remove-button" onClick={handleRemoveSelectedItems}  disabled={selectedItems.size === 0}>
+        <button className="remove-button" onClick={handleRemoveSelectedItems} disabled={selectedItems.size === 0}>
           Remove Selected Items
         </button>
         <DownloadReport items={items} boxName={boxName} />
-        {/* <button className="download-button" items={items}>
-          Download Report
-        </button> */}
+        {/* Pagination */}
+        <div className="pagination">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index + 1}
+              className={currentPage === index + 1 ? 'active' : ''}
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
       </div>
       <div className="item-container">
         {selectedItem ? (
@@ -431,31 +465,31 @@ const BoxStock = () => {
           <div className="item-diamonds">
             <Title text='Diamonds' />
             <div className="table-scroll">
-            <table className="item-table">
-              <thead>
-                <tr>
-                  <th>Weight (cts)</th>
-                  <th>Value</th>
-                  <th>Rate</th>
-                  <th>Details</th>
-                  <th>PCS</th>
-                  <th>Lot No</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedItem.diamonds.map(diamond => (
-                  <tr key={diamond.diamondId}>
-                    <td>{getDisplayValue(diamond.weightCts)}</td>
-                    <td>{getDisplayValue(diamond.value)}</td>
-                    <td>{getDisplayValue(diamond.rate)}</td>
-                    <td>{getDisplayValue(diamond.details)}</td>
-                    <td>{getDisplayValue(diamond.pcs)}</td>
-                    <td>{getDisplayValue(diamond.lotNo)}</td>
+              <table className="item-table">
+                <thead>
+                  <tr>
+                    <th>Weight (cts)</th>
+                    <th>Value</th>
+                    <th>Rate</th>
+                    <th>Details</th>
+                    <th>PCS</th>
+                    <th>Lot No</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {selectedItem.diamonds.map(diamond => (
+                    <tr key={diamond.diamondId}>
+                      <td>{getDisplayValue(diamond.weightCts)}</td>
+                      <td>{getDisplayValue(diamond.value)}</td>
+                      <td>{getDisplayValue(diamond.rate)}</td>
+                      <td>{getDisplayValue(diamond.details)}</td>
+                      <td>{getDisplayValue(diamond.pcs)}</td>
+                      <td>{getDisplayValue(diamond.lotNo)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
@@ -464,57 +498,27 @@ const BoxStock = () => {
           <div className="item-roseCuts">
             <Title text='Rose Cuts' />
             <div className="table-scroll">
-            <table className="item-table">
-              <thead>
-                <tr>
-                  <th>Weight (cts)</th>
-                  <th>Value</th>
-                  <th>Rate</th>
-                  <th>PCS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedItem.roseCuts.map((roseCut, index) => (
-                  <tr key={index}>
-                    <td>{getDisplayValue(roseCut.weightCts)}</td>
-                    <td>{getDisplayValue(roseCut.value)}</td>
-                    <td>{getDisplayValue(roseCut.rate)}</td>
-                    <td>{getDisplayValue(roseCut.pcs)}</td>
+              <table className="item-table">
+                <thead>
+                  <tr>
+                    <th>Weight (cts)</th>
+                    <th>Value</th>
+                    <th>Rate</th>
+                    <th>PCS</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-
-          </div>
-          </div>
-        )}
-
-        {/* Polkis Table */}
-        {selectedItem?.polkis.length > 0 && (
-          <div className="item-polkis">
-            <Title text='Polkis' />
-            <div className="table-scroll">
-            <table className="item-table">
-              <thead>
-                <tr>
-                  <th>Weight (cts)</th>
-                  <th>Value</th>
-                  <th>Rate</th>
-                  <th>Details</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedItem.polkis.map(polki => (
-                  <tr key={polki.polkiId}>
-                    <td>{getDisplayValue(polki.weightCts)}</td>
-                    <td>{getDisplayValue(polki.value)}</td>
-                    <td>{getDisplayValue(polki.rate)}</td>
-                    <td>{getDisplayValue(polki.details)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {selectedItem.roseCuts.map((roseCut, index) => (
+                    <tr key={index}>
+                      <td>{getDisplayValue(roseCut.weightCts)}</td>
+                      <td>{getDisplayValue(roseCut.value)}</td>
+                      <td>{getDisplayValue(roseCut.rate)}</td>
+                      <td>{getDisplayValue(roseCut.pcs)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
@@ -523,31 +527,33 @@ const BoxStock = () => {
           <div className="item-coloredStones">
             <Title text='Colored Stones' />
             <div className="table-scroll">
-            <table className="item-table">
-              <thead>
-                <tr>
-                  <th>Weight (cts)</th>
-                  <th>Value</th>
-                  <th>Rate</th>
-                  <th>PCS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedItem.coloredStones.map((stone, index) => (
-                  <tr key={index}>
-                    <td>{getDisplayValue(stone.weightCts)}</td>
-                    <td>{getDisplayValue(stone.value)}</td>
-                    <td>{getDisplayValue(stone.rate)}</td>
-                    <td>{getDisplayValue(stone.pcs)}</td>
+              <table className="item-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Weight (cts)</th>
+                    <th>Value</th>
+                    <th>Rate</th>
+                    <th>Details</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-
-          </div>
+                </thead>
+                <tbody>
+                  {selectedItem.coloredStones.map((coloredStone, index) => (
+                    <tr key={index}>
+                      <td>{getDisplayValue(coloredStone.name)}</td>
+                      <td>{getDisplayValue(coloredStone.weightCts)}</td>
+                      <td>{getDisplayValue(coloredStone.value)}</td>
+                      <td>{getDisplayValue(coloredStone.rate)}</td>
+                      <td>{getDisplayValue(coloredStone.details)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };
