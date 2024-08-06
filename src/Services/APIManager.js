@@ -32,24 +32,46 @@ export const LoginAPI = async (username, password) => {
 };
 
 
-export const FetchItemsAPI = async () => {
+// export const FetchItemsAPI = async () => {
+//   try {
+//     const response = await fetch(`${DEFAULT_URL}items/search`, {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     });
+//     if (!response) {
+      
+//       throw new Error("Failed to fetch items");
+//     }
+
+//     const resultData = await response.json();
+//     console.log("Current stock", resultData);
+//     return resultData;
+//   } 
+//    catch (error) {
+//     console.error('Error in FetchItemsAPI:', error);
+//     return { error: error.message };
+//   }
+// };
+
+export const FetchItemsAPI = async (limit, page) => {
   try {
-    const response = await fetch(`${DEFAULT_URL}items/search`, {
+    const response = await fetch(`${DEFAULT_URL}items/search?l=${limit}&p=${page}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     });
+    
     if (!response) {
-      
       throw new Error("Failed to fetch items");
     }
 
     const resultData = await response.json();
     console.log("Current stock", resultData);
     return resultData;
-  } 
-   catch (error) {
+  } catch (error) {
     console.error('Error in FetchItemsAPI:', error);
     return { error: error.message };
   }
@@ -123,23 +145,28 @@ export const UpdateBoxAPI = async (id, itemIds) => {
     return { error: error.message };
   }
 };
-
 export const CreateBoxAPI = async (parentId, itemIds, boxDescription) => {
   try {
+    const payload = {
+      parentId: parentId,
+      itemIds: itemIds,
+      boxDescription: boxDescription
+    };
+
+    console.log('Request Payload:', payload);
+
     const response = await fetch(DEFAULT_URL + 'boxes/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        parentId: parentId,
-        itemIds: itemIds,
-        boxDescription: boxDescription
-      }),
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
-      throw new Error("Failed to create box");
+      const errorText = await response.text();
+      console.error('Error response from server:', errorText);
+      throw new Error(`Failed to create box: ${response.status} ${response.statusText}`);
     }
 
     const resultData = await response.json();
@@ -150,6 +177,34 @@ export const CreateBoxAPI = async (parentId, itemIds, boxDescription) => {
     return { error: error.message };
   }
 };
+
+
+// export const CreateBoxAPI = async (parentId, itemIds, boxDescription) => {
+//   try {
+//     const response = await fetch(DEFAULT_URL + 'boxes/', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         parentId: parentId,
+//         itemIds: itemIds,
+//         boxDescription: boxDescription
+//       }),
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to create box");
+//     }
+
+//     const resultData = await response.json();
+//     console.log("Box created successfully:", resultData);
+//     return resultData;
+//   } catch (error) {
+//     console.error('Error in CreateBoxAPI:', error);
+//     return { error: error.message };
+//   }
+// };
 
 // export const StockHistoryAPI = async () => {
 //   try {
@@ -216,6 +271,7 @@ export const GetItemsByIDAPI = async (id) => {
   }
 };
 
+
 export const DownloadPrice = async (itemIds) => {
   try {
     const response = await fetch(`${DEFAULT_URL}prices/download?itemIds=${itemIds.join(',')}`, {
@@ -226,9 +282,8 @@ export const DownloadPrice = async (itemIds) => {
     });
 
     if (response.status === 200) {
-      const resultData = await response.json();
-      console.log("Download Price", resultData);
-      return resultData;
+      const blob = await response.blob();
+      return blob;
     } else {
       throw new Error(`Failed to download price: ${response.statusText}`);
     }

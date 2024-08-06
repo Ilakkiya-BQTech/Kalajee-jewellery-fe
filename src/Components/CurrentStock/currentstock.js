@@ -7,64 +7,101 @@ const CurrentStock = () => {
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  
+  const [limit, setLimit] = useState(10); 
+  const [page, setPage] = useState(1); 
+  const [totalItems, setTotalItems] = useState(0); 
+
   useEffect(() => {
     const fetchData = async () => {
-      const data = await FetchItemsAPI();
-      if (data && data.data) {
-        setItems(data.data);
+      try {
+        const data = await FetchItemsAPI(limit, page);
+        if (data && data.data) {
+          setItems(data.data);
+          setTotalItems(data.totalItems || 50); 
+        }
+      } catch (error) {
+        console.error("Error fetching items:", error);
       }
     };
     fetchData();
-  }, []);
+  }, [limit, page]);
 
-  // Filter items based on search term
-  const filteredItems = items.filter(item => {
-    const lowerCaseSearchTerm = searchTerm.trim().toLowerCase();
-    return (
-      item.itemCode.toLowerCase().includes(lowerCaseSearchTerm) ||
-      item.goldValue.toLowerCase().includes(lowerCaseSearchTerm) ||
-      item.rCode.toLowerCase().includes(lowerCaseSearchTerm) ||
-      item.grossWtGrams.toLowerCase().includes(lowerCaseSearchTerm)
-    );
-  });
+ 
+  const totalPages = Math.ceil(totalItems / limit);
 
-  const getDisplayValue = (value) => value === null || value === undefined ? '-' : value;
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers;
+  };
+
+  const getDisplayValue = (value) => (value === null || value === undefined ? '-' : value);
 
   return (
-    <div className="stock"> 
+    <div className="stock">
       <div className="table-container">
         <input
           type="text"
           placeholder="Search..."
           value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="search-box"
         />
         <table className="item-tables">
           <thead>
             <tr>
               <th>Item Code</th>
-              {/* <th>Gold Value</th> */}
               <th>R-Code</th>
               <th>Gross Weight</th>
             </tr>
           </thead>
           <tbody>
-            {filteredItems.map((item, index) => (
+            {items.map((item, index) => (
               <tr
                 key={index}
                 onClick={() => setSelectedItem(item)}
-                className={selectedItem && selectedItem.itemId === item.itemId ? 'highlighted-row' : ''}
+                className={
+                  selectedItem && selectedItem.itemId === item.itemId ? 'highlighted-row' : ''
+                }
               >
                 <td>{getDisplayValue(item.itemCode)}</td>
-                {/* <td>{getDisplayValue(item.goldValue)}</td> */}
                 <td>{getDisplayValue(item.rCode)}</td>
                 <td>{getDisplayValue(item.grossWtGrams)} grams</td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div className="pagination">
+          <button
+            className="arrows"
+            onClick={() => handlePageChange(Math.max(1, page - 1))}
+            disabled={page === 1}
+          >
+            &lt;
+          </button>
+          {getPageNumbers().map((pg) => (
+            <button
+              key={pg}
+              className={page === pg ? 'active' : ''}
+              onClick={() => handlePageChange(pg)}
+            >
+              {pg}
+            </button>
+          ))}
+          <button
+            className="arrows"
+            onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
+            disabled={page === totalPages}
+          >
+            &gt;
+          </button>
+        </div>
       </div>
       <div className="item-container">
         {selectedItem ? (
@@ -215,5 +252,4 @@ const CurrentStock = () => {
 };
 
 export default CurrentStock;
-
 

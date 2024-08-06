@@ -182,6 +182,7 @@ const TableComponent = () => {
               totalItems: item.totalItems,
               totalRead: item.totalRead,
               totalUnread: item.totalUnread,
+              createdAt: new Date(item.createdAt).toLocaleString(),
               unreadItemIds: item.unreadItemIds.map(id => ({
                 id,
                 code: `Code-${id}`,
@@ -241,8 +242,10 @@ const TableComponent = () => {
           <tr>
             <th>Box ID</th>
             <th>Total Items</th>
+            <th>Created At</th>
             <th>Total Read</th>
             <th>Total Unread</th>
+          
           </tr>
         </thead>
         <tbody>
@@ -250,12 +253,14 @@ const TableComponent = () => {
             <tr key={item.id}>
               <td>{item.boxId}</td>
               <td>{item.totalItems}</td>
+              <td>{item.createdAt}</td> 
               <td>{item.totalRead}</td>
               <td>
                 <button className="unread-button" onClick={() => handleUnreadClick(item.unreadItemIds.map(i => i.id))}>
                   {item.totalUnread}
                 </button>
               </td>
+            
             </tr>
           ))}
         </tbody>
@@ -290,3 +295,4 @@ const TableComponent = () => {
 };
 
 export default TableComponent;
+
