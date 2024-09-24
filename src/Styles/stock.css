@@ -16,6 +16,10 @@
   align-items: center;
   text-align: center;
   justify-content: center;
+  width: 50%;
+}
+.table-container{
+  width: 50%;
 }
 
 .item-container p {
@@ -62,7 +66,16 @@
   border-collapse: collapse;
   margin-top: 20px;
 }
-
+.item-gold{
+  width: 100%;
+}
+.item-prices{
+  width: 100%;
+ 
+}
+/* .item-prices .table-scroll{
+  padding: 20px;
+} */
 .item-table th, .item-table td {
   border: none;
   border-bottom: 1px solid #ddd;
@@ -92,9 +105,9 @@
   cursor: pointer;
   border-radius: 5px;
 }
-.stock-manager .pagination{
+/* .stock-manager .pagination{
   margin-top: 0;
-}
+} */
 .remove-button {
   background-color: red;
 }
@@ -214,5 +227,11 @@
   .stock-manager .table-bottom{
     margin: 10px;
     flex-direction: column;
+  }
+  .table-container{
+    width: 100%;
+  }
+  .table-container{
+    width: 100%;
   }
 }

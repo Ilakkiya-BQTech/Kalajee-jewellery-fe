@@ -182,7 +182,17 @@ const TableComponent = () => {
               totalItems: item.totalItems,
               totalRead: item.totalRead,
               totalUnread: item.totalUnread,
-              createdAt: new Date(item.createdAt).toLocaleString(),
+              createdAt: item.createdAt ? new Date(item.createdAt).toLocaleString('en-US', {
+                timeZone: 'UTC',        
+                hour: 'numeric',        
+                minute: 'numeric',      
+                second: 'numeric',      
+                hour12: true,           
+                year: 'numeric',        
+                month: 'numeric',       
+                day: 'numeric'          
+              }) : 'Not available',
+              // createdAt: new Date(item.createdAt).toLocaleString(),
               unreadItemIds: item.unreadItemIds.map(id => ({
                 id,
                 code: `Code-${id}`,
@@ -205,9 +215,10 @@ const TableComponent = () => {
   }, []);
 
   const handleUnreadClick = (unreadItemIds) => {
-    navigate('/unread', { state: { unreadItemIds } });
+    const ids = unreadItemIds.map(item => item.itemId);  // Ensure itemId is used
+    navigate('/unread', { state: { unreadItemIds: ids } });
   };
-
+  
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };

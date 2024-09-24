@@ -79,7 +79,7 @@ body {
 
 .menu {
   gap: 20px;
-  padding: 40px 0;
+  padding: 10px 0;
   text-decoration: none;
 }
 .menu a{
@@ -89,7 +89,7 @@ body {
 .sidebar li {
   color: #000;
   font-size: 20px;
-  padding: 20px;
+  padding: 19px;
   cursor: pointer;
 }
 
@@ -209,5 +209,105 @@ body {
   .footer-section{
     width: 100%;
     left: 0;
+  }
+}
+.navbar .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.nav-actions{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #fff;
+  border-radius: 25px;
+  background-color: #fff;
+ 
+}
+.notification-icon,
+.profile-icon {
+  width: 30px;
+  height: 20px;
+  cursor: pointer;
+  color: #fff;
+  position: relative;
+ 
+
+}
+.profile-icon{
+  color: #000;
+  margin: 8px  5px 8px 3px;
+}
+.notification-icon{
+  color: darkorange;
+  margin: 8px 3px 8px 5px;
+}
+
+.profile {
+  position: relative;
+  cursor: pointer;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  border-radius: 8px;
+  width: 200px;
+}
+
+.dropdown.show {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.user-name {
+  font-size: 17px;
+  margin-right: 8px;
+  color: #000;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .nav-right {
+    gap: 10px;
+  }
+
+  .notification-icon,
+  .profile-icon {
+    width:25px;
+    height: 25px;
+  }
+
+  .dropdown {
+    right: 0;
+    left: unset;
+  }
+  .profile-icon{
+    color: #000;
+    margin: 10px  15px 10px 5px;
+  }
+  .notification-icon{
+    color: darkorange;
+    margin: 10px 5px 10px 15px;
   }
 }

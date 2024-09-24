@@ -25,11 +25,11 @@ const Boxes = () => {
       {boxes.length > 0 ? (
         boxes.map((box) => (
           <Link to={`/stock/${box.boxId}`} key={box.boxId} className="box">
-            <Title text={`Box ${box.boxId}`} />
+            <Title text={`${box.boxId}`} />
             <p><span>Description:</span> {box.boxDescription}</p>
-            <p><span>Weight:</span> {box.boxWeight}</p>
-            <p><span>Status:</span> {box.boxStatus}</p>
-            <p><span>Quantity:</span> {box.count}</p>
+            {/* <p><span>Weight:</span> {box.boxWeight}</p> */}
+            <p><span>Box Status:</span> {box.boxStatus}</p>
+            <p><span>Count:</span> {box.count}</p>
           </Link>
         ))
       ) : (

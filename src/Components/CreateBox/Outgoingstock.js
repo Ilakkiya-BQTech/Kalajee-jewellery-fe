@@ -61,11 +61,11 @@ const StockManager = () => {
         }
     };
 
-    const handlePageChange = async (newPage) => {
-        if (newPage > 0 && newPage <= totalPages) {
-            setCurrentPage(newPage);
-        }
-    };
+    // const handlePageChange = async (newPage) => {
+    //     if (newPage > 0 && newPage <= totalPages) {
+    //         setCurrentPage(newPage);
+    //     }
+    // };
 
     const totalPages = Math.ceil(allItems.length / rowsPerPage);
     const paginatedData = items.slice(
@@ -73,37 +73,37 @@ const StockManager = () => {
         currentPage * rowsPerPage
     );
 
-    const renderPagination = () => {
-        const pages = [];
-        for (let i = 1; i <= totalPages; i++) {
-            pages.push(
-                <button
-                    key={i}
-                    className={currentPage === i ? "active" : ""}
-                    onClick={() => handlePageChange(i)}
-                >
-                    {i}
-                </button>
-            );
-        }
-        return (
-            <div className="pagination">
-                <button className="arrows"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                >
-                    &lt;
-                </button>
-                {pages}
-                <button className="arrows"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                >
-                    &gt;
-                </button>
-            </div>
-        );
-    };
+    // const renderPagination = () => {
+    //     const pages = [];
+    //     for (let i = 1; i <= totalPages; i++) {
+    //         pages.push(
+    //             <button
+    //                 key={i}
+    //                 className={currentPage === i ? "active" : ""}
+    //                 onClick={() => handlePageChange(i)}
+    //             >
+    //                 {i}
+    //             </button>
+    //         );
+    //     }
+    //     return (
+    //         <div className="pagination">
+    //             <button className="arrows"
+    //                 onClick={() => handlePageChange(currentPage - 1)}
+    //                 disabled={currentPage === 1}
+    //             >
+    //                 &lt;
+    //             </button>
+    //             {pages}
+    //             <button className="arrows"
+    //                 onClick={() => handlePageChange(currentPage + 1)}
+    //                 disabled={currentPage === totalPages}
+    //             >
+    //                 &gt;
+    //             </button>
+    //         </div>
+    //     );
+    // };
 
     const selectedData = [...new Map(allItems.filter(item => selectedRows.includes(item.itemId)).map(item => [item.itemId, item])).values()];
 
@@ -122,6 +122,12 @@ const StockManager = () => {
     const handlePreviousPage = () => {
         if (page > 1) {
             setPage((prevPage) => prevPage - 1);
+        }
+    };
+    const handlePageChanges = (newPage) => {
+        if (newPage >= 1 && newPage <= 5) {
+            setPage(newPage);
+            fetchData(limit, newPage);
         }
     };
 
@@ -144,6 +150,8 @@ const StockManager = () => {
                                 </th>
                                 <th>Image</th>
                                 <th>Code</th>
+
+                                <th>Price</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -161,27 +169,45 @@ const StockManager = () => {
                                         />
                                     </td>
                                     <td>
-                                        <img src={item.itemImages[0]?.imageUrl} alt={item.itemCode} width="50" />
+                                        <img
+                                            src={(item.images?.[0]?.imageUrl) || 'default-image-url'}
+                                            alt={item.itemCode}
+                                            width="50"
+                                        />
                                     </td>
                                     <td>{item.itemCode}</td>
+
+
+                                    <td>₹{parseFloat(item.prices.retailPrice).toFixed(2)}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                    <div className="pagination-controls">
-                        <button onClick={handlePreviousPage} disabled={page === 1}>
-                            Previous
+                    <div className="pagination">
+                        <button className="arrows" onClick={handlePreviousPage} disabled={page === 1}>
+                            &lt;
                         </button>
-                        <span>Page {page}</span>
-                        <button onClick={handleNextPage} disabled={items.length < limit}>
-                            Next
+
+                        {Array.from({ length: 5 }, (_, index) => (
+                            <button
+                                key={index + 1}
+                                onClick={() => handlePageChanges(index + 1)}
+                                className={page === index + 1 ? 'active' : ''}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+
+                        <button className="arrows" onClick={handleNextPage} disabled={page === 5}>
+                            &gt;
                         </button>
                         {selectedRows.length > 0 && (
                             <button onClick={() => setShowAllPage(true)}>
-                                Show All Selected Items
+                               Show All Selected Items
                             </button>
                         )}
                     </div>
+
                 </div>
 
                 <div className="selected-items-container">
@@ -189,8 +215,15 @@ const StockManager = () => {
                     <div className="item-details-container">
                         {selectedRowDetails ? (
                             <div className="exit-item-details">
-                                <img src={selectedRowDetails.itemImages[0]?.imageUrl} alt={selectedRowDetails.itemCode} width="100" />
+                                <img src={selectedRowDetails.images?.[0]?.imageUrl || 'default-image-url'} alt={selectedRowDetails.itemCode} width="100" />
                                 <p>Code: {selectedRowDetails.itemCode}</p>
+                                <p>Name: {selectedRowDetails.itemName}</p>
+                                <p>Category: {selectedRowDetails.itemCategoryName}</p>
+                                <p>Gold Weight: {selectedRowDetails.gold.reduce((acc, gold) => acc + parseFloat(gold.goldWeightGrams), 0)} g</p>
+                                <p>Silver Weight: {selectedRowDetails.silverWeightGrams || 'N/A'} g</p>
+                                <p>Gross Weight: {selectedRowDetails.grossWeightGrams} g</p>
+                                <p>Price: ₹{parseFloat(selectedRowDetails.prices.retailPrice).toFixed(2)}</p>
+
                             </div>
                         ) : (
                             <p>No item selected</p>
@@ -198,7 +231,6 @@ const StockManager = () => {
                     </div>
                 </div>
             </div>
-           
         </div>
     );
 };

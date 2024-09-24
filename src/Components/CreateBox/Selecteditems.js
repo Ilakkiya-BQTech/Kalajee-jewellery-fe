@@ -217,27 +217,32 @@ const ShowAllSelected = ({ selectedData, onBack }) => {
 
       {selectedData.length === 0 && <p>No items selected</p>}
       {selectedData.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Image</th>
-              <th>Code</th>
-            </tr>
-          </thead>
-          <tbody>
-            {selectedData.map((item, index) => (
-              <tr key={item.itemId}>
-                <td>{index + 1}</td>
-                <td>
-                  <img src={item.itemImages[0]?.imageUrl} alt={item.itemCode} width="50" />
-                </td>
-                <td>{item.itemCode}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Image</th>
+        <th>Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      {selectedData.map((item, index) => (
+        <tr key={item.itemId}>
+          <td>{index + 1}</td>
+          <td>
+            
+            {item.images && item.images.length > 0 ? (
+              <img src={item.images[0]?.imageUrl} alt={item.itemCode} width="50" />
+            ) : (
+              <span>No Image</span>
+            )}
+          </td>
+          <td>{item.itemCode}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)}
 
       <div className="bottom-button">
         <button onClick={onBack}>Back</button>

@@ -77,9 +77,10 @@ export const FetchItemsAPI = async (limit, page) => {
   }
 };
 
+
 export const AllBoxesAPI = async () => {
   try {
-    const response = await fetch(DEFAULT_URL + 'boxes/search', {
+    const response = await fetch(`${DEFAULT_URL}boxes/search?s=Delhi`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -259,7 +260,8 @@ export const GetItemsByIDAPI = async (id) => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch item details");
+      const errorText = await response.text(); // Get more detailed error information
+      throw new Error(`Failed to fetch item details: ${errorText}`);
     }
 
     const resultData = await response.json();
@@ -289,6 +291,63 @@ export const DownloadPrice = async (itemIds) => {
     }
   } catch (error) {
     console.error('Error in Download price API:', error);
+    return { error: error.message };
+  }
+};
+
+// export const GetUsersAPI = async () => {
+//   try {
+//     const response = await fetch(`${DEFAULT_URL}users/search?t=vendor`, {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     });
+
+//     if (!response.ok) {
+//       const errorText = await response.text();
+//       throw new Error(`Failed to fetch user details: ${errorText}`);
+//     }
+
+//     const resultData = await response.json();
+//     console.log("Get all Users API response:", resultData);
+
+   
+//     if (resultData && resultData.data) {
+//       return resultData.data;  
+//     } else {
+//       throw new Error('Unexpected API response format');
+//     }
+//   } catch (error) {
+//     console.error('Error in GetUsersAPI:', error);
+//     return { error: error.message };
+//   }
+// };
+export const GetUsersAPI = async () => {
+  try {
+    const response = await fetch(`${DEFAULT_URL}users/search?t=vendor`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to fetch user details: ${errorText}`);
+    }
+
+    const resultData = await response.json();
+    console.log("Get all Users API response:", resultData);
+
+    // Return the 'data' array directly
+    if (resultData && Array.isArray(resultData.data)) {
+      return resultData.data;  
+    } else {
+      throw new Error('Unexpected API response format');
+    }
+  } catch (error) {
+    console.error('Error in GetUsersAPI:', error);
     return { error: error.message };
   }
 };

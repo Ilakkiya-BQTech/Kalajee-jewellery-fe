@@ -1,129 +1,128 @@
-// import React from 'react';
-// import '../../Styles/stock.css';
-// import TableWithSearchAndPagination from '../../Container/FetchAllItems/FetchallItem';
-
-// const CurrentStock = () => {
-//     return (
-//         <div className="stock">
-//             <TableWithSearchAndPagination type="CurrentStock" />
-//         </div>
-//     );
-// };
-
-// export default CurrentStock;
-
-
-
 import React, { useState, useEffect } from 'react';
-import '../../Styles/stock.css';
-import { Para, Subtitle, Title } from '../../Container/Container';
 import { FetchItemsAPI } from '../../Services/APIManager';
+import { Title, Para, DownloadReport } from '../Container';
+import '../../Styles/stock.css'
 
-const CurrentStock = () => {
-  const [items, setItems] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [limit, setLimit] = useState(10); 
-  const [page, setPage] = useState(1); 
-  const [totalItems, setTotalItems] = useState(0); 
+const TableWithSearchAndPagination = ({ type, handleRemoveSelectedItems, boxName }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [items, setItems] = useState([]);
+    const [page, setPage] = useState(1);
+    const [limit] = useState(10);
+    const [totalItems, setTotalItems] = useState(50); 
+    const [selectedItems, setSelectedItems] = useState(new Set()); 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await FetchItemsAPI(limit, page);
-        if (data && data.data) {
-          setItems(data.data);
-          setTotalItems(data.totalItems || 50); 
-        }
-      } catch (error) {
-        console.error("Error fetching items:", error);
-      }
-    };
-    fetchData();
-  }, [limit, page]);
+    const totalPages = Math.ceil(totalItems / limit);
 
- 
-  const totalPages = Math.ceil(totalItems / limit);
-
-  const handlePageChange = (newPage) => {
-    setPage(newPage);
-  };
-  const formatNumber = (value) => {
-    const number = parseFloat(value);
-    return isNaN(number) ? '0.00' : number.toFixed(2);
-};
-
-  const getPageNumbers = () => {
-    const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pageNumbers.push(i);
-    }
-    return pageNumbers;
-  };
-
-  const getDisplayValue = (value) => (value === null || value === undefined ? '-' : value);
-
-  return (
-    <div className="stock">
-      <div className="table-container">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-box"
-        />
-        <table className="item-tables">
-          <thead>
-            <tr>
-              <th>Item Code</th>
-              <th>R-Code</th>
-              <th>Gross Weight</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, index) => (
-              <tr
-                key={index}
-                onClick={() => setSelectedItem(item)}
-                className={
-                  selectedItem && selectedItem.itemId === item.itemId ? 'highlighted-row' : ''
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await FetchItemsAPI(limit, page);
+                if (data && data.data) {
+                    setItems(data.data);
+                    setTotalItems(data.totalItems || 50);
                 }
-              >
-                <td>{getDisplayValue(item.itemCode)}</td>
-                <td>{getDisplayValue(item.prices.rCode)}</td>
-                <td>{getDisplayValue(item.grossWeightGrams)} grams</td>
-              </tr>
-            ))}
-          </tbody>
+            } catch (error) {
+                console.error("Error fetching items:", error);
+            }
+        };
+        fetchData();
+    }, [limit, page]);
+
+    const filteredItems = items.filter(item =>
+        item?.itemCode?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const getDisplayValue = (value) => (value ? value : 'N/A');
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setPage(newPage);
+        }
+    };
+
+    const getPageNumbers = () => {
+        const pages = [];
+        for (let i = 1; i <= totalPages; i++) {
+            pages.push(i);
+        }
+        return pages;
+    };
+
+    const handleCheckboxChange = (itemId) => {
+        setSelectedItems(prev => {
+            const newSelection = new Set(prev);
+            if (newSelection.has(itemId)) {
+                newSelection.delete(itemId);
+            } else {
+                newSelection.add(itemId);
+            }
+            return newSelection;
+        });
+    };
+
+    const handleSelectAllChange = () => {
+        if (selectedItems.size === items.length) {
+            setSelectedItems(new Set());
+        } else {
+            const newSelection = new Set(items.map(item => item.itemId));
+            setSelectedItems(newSelection);
+        }
+    };
+
+    // TableContainer component inside TableWithSearchAndPagination
+    const TableContainer = () => (
+        <table className="item-tables">
+            <thead>
+                <tr>
+                    {type === 'BoxStock' && (
+                        <th>
+                            <input
+                                type="checkbox"
+                                checked={selectedItems.size === items.length}
+                                onChange={handleSelectAllChange}
+                            />
+                        </th>
+                    )}
+                    <th>Item Code</th>
+                    <th>R-Code</th>
+                    <th>Gross Weight</th>
+                </tr>
+            </thead>
+            <tbody>
+                {filteredItems.map((item, index) => (
+                    <tr
+                        key={index}
+                        onClick={() => setSelectedItem(item)}
+                        className={selectedItem && selectedItem.itemId === item.itemId ? 'highlighted-row' : ''}
+                    >
+                        {type === 'BoxStock' && (
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedItems.has(item.itemId)}
+                                    onChange={() => handleCheckboxChange(item.itemId)}
+                                />
+                            </td>
+                        )}
+                        <td>{getDisplayValue(item.itemCode)}</td>
+                        <td>{getDisplayValue(item.prices.rCode)}</td>
+                        <td>{getDisplayValue(item.grossWeightGrams)} grams</td>
+                    </tr>
+                ))}
+            </tbody>
         </table>
-        <div className="pagination">
-          <button
-            className="arrows"
-            onClick={() => handlePageChange(Math.max(1, page - 1))}
-            disabled={page === 1}
-          >
-            &lt;
-          </button>
-          {getPageNumbers().map((pg) => (
-            <button
-              key={pg}
-              className={page === pg ? 'active' : ''}
-              onClick={() => handlePageChange(pg)}
-            >
-              {pg}
-            </button>
-          ))}
-          <button
-            className="arrows"
-            onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
-            disabled={page === totalPages}
-          >
-            &gt;
-          </button>
-        </div>
-      </div>
-      <div className="item-container">
+    );
+
+    const ItemContainer = () => {
+        // Utility function to safely format numbers
+        const formatNumber = (value) => {
+            const number = parseFloat(value);
+            return isNaN(number) ? '0.00' : number.toFixed(2);
+        };
+    
+        return (
+            <div className="item-container">
                 {selectedItem ? (
                     <div className='item-top'>
                         <div className="item-image-section">
@@ -325,10 +324,59 @@ const CurrentStock = () => {
     
                 
             </div>
-    </div>
-  );
+        );
+    };
+    
+    return (
+        <>
+            <div className="table-container">
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="search-box"
+                />
+                <TableContainer />
+                <div className="pagination">
+                    <button
+                        className="arrows"
+                        onClick={() => handlePageChange(page - 1)}
+                        disabled={page === 1}
+                    >
+                        &lt;
+                    </button>
+                    {getPageNumbers().map((pg) => (
+                        <button
+                            key={pg}
+                            className={page === pg ? 'active' : ''}
+                            onClick={() => handlePageChange(pg)}
+                        >
+                            {pg}
+                        </button>
+                    ))}
+                    <button
+                        className="arrows"
+                        onClick={() => handlePageChange(page + 1)}
+                        disabled={page === totalPages}
+                    >
+                        &gt;
+                    </button>
+                </div>
+                {type === 'BoxStock' && (
+                    <>
+                        <button className="remove-button" onClick={handleRemoveSelectedItems} disabled={selectedItems.size === 0}>
+                            Remove Selected Items
+                        </button>
+                        <DownloadReport items={items} boxName={boxName} />
+                    </>
+                )}
+            </div>
+            <ItemContainer />
+        </>
+    );
 };
 
-export default CurrentStock;
 
+export default TableWithSearchAndPagination;
 

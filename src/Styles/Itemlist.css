@@ -1,0 +1,102 @@
+.vendor-pricing {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    /* margin-left: 16%; */
+    margin:20px 10px 10px 16%;
+}
+
+.left-section, .right-section {
+    flex: 1;
+    margin: 0 10px;
+}
+
+.left-section h3, .right-section h3 {
+    margin-bottom: 10px;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.vendor-pricing-details {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.vendor-pricing-details h4 {
+    margin: 0 0 10px 0;
+}
+
+.vendor-pricing table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.vendor-pricing table th, table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.vendor-pricing table th {
+    background-color: #f1f1f1;
+}
+
+.vendor-pricing table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.vendor-pricing button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.vendor-pricing button:hover {
+    background-color: #0056b3;
+}
+.back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ccc;
+    color: #000;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease;
+    margin:20px 10px 10px 16%;
+}
+
+.back-button:hover {
+    background-color: #fff;
+    border: 1px solid #000;
+}
+
+.back-button svg {
+    width: 20px;
+    height: 20px;
+}
+@media (max-width: 900px) {
+    .vendor-pricing {
+        flex-direction: column;
+        width: 100%;
+    }
+}

@@ -109,7 +109,7 @@ tbody tr:nth-child(even) {
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* width: calc(33.333% - 20px);  */
+    /* width: calc(25% - 20px);  */
     background: #fff;
     overflow: hidden;
     display: flex;
@@ -166,7 +166,9 @@ tbody tr:nth-child(even) {
     height: auto;
     }
     .item-card img{
-      width: 60%;
-      margin: 10px auto;
+      /* width: 60%;
+      margin: 10px auto; */
+      width: 100%;
+      height: auto;
     }
   }
