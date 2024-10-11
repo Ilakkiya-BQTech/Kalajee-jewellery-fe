@@ -6,7 +6,8 @@
     align-items: center;
     min-height: 100vh;
     background-size: cover;
-    background:url('https://www.kalajee.com/cdn/shop/files/Kalajee_1800x896_f8ecc871-3734-48cf-964e-7d6643f72181_1800x.jpg?v=1706685287');
+    background:#224886;
+    /* background:url('https://www.kalajee.com/cdn/shop/files/Kalajee_1800x896_f8ecc871-3734-48cf-964e-7d6643f72181_1800x.jpg?v=1706685287'); */
 }
 
 .wrapper {

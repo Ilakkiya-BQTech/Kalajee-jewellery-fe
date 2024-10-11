@@ -14,7 +14,7 @@ const FolderPage = () => {
           {folder.items.map((item) => (
             <div key={item.itemId} className="folder-item">
               <img
-                src={item.itemImages[0]?.imageUrl || 'placeholder.jpg'}
+                src={item.itemImages && item.itemImages.length > 0 &&  item.itemImages[0]?.imageUrl || 'placeholder.jpg'}
                 alt={item.itemName || 'Jewelry'}
                 className="folder-item-image"
               />
